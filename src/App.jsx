@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import React, { useState } from "react";
+import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
@@ -122,6 +122,7 @@ const getCategoryColor = (category) => {
 };
 
 const customIcon = (category) => {
+  // eslint-disable-next-line no-undef
   return L.divIcon({
     className: "custom-marker",
     html: `<div style="background-color: ${getCategoryColor(category)};color:${
@@ -184,6 +185,7 @@ const CustomTileLayer = () => {
   const map = useMap();
 
   React.useEffect(() => {
+    // eslint-disable-next-line no-undef
     const layer = L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
       {
@@ -260,7 +262,7 @@ export default function App() {
                 htmlFor="category-dropdown"
                 className="trigger"
               >
-                <span className="dropdown-title">Secteur d'activité</span>
+                <span className="dropdown-title">Secteur d&lsquo;activité</span>
                 <ChevronDown
                   className={`chevron ${sectorOpen ? "open" : ""}`}
                 />
@@ -356,10 +358,9 @@ export default function App() {
           center={[0, 20]}
           zoom={4}
           style={{ height: "90vh", width: "100%" }}
-          minZoom={3}
-          maxZoom={8}
+          minZoom={2}
+          maxZoom={6}
           className="map"
-          scrollWheelZoom={false}
           zoomControl={false}
         >
           <CustomTileLayer />

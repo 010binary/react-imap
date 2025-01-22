@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
 .leaflet-tile {
   filter:  brightness(1.7) saturate(1.5);
 }
@@ -256,5 +262,26 @@
 /* For IE and Edge */
 .webkit-scrollbar {
   -ms-overflow-style: none;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    margin: 10px 0px;
+    height: calc(100vh - 40px);
+  }
+  .sidebar {
+      display: none;
+  }
+  .leaflet-control-zoom {
+    border: none !important;
+    margin: 0 10px 25px 0 !important;
+  }
+  .leaflet-control-zoom a {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+    padding: 5px 0px !important;
+  }
+  
 }
 
