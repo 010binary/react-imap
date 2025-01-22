@@ -228,14 +228,17 @@ export default function App() {
         <MapContainer
           center={[0, 20]} // Center on Africa
           zoom={4}
-          style={{ height: "100vh", width: "100%" }}
+          style={{ height: "90vh", width: "100%" }}
           minZoom={3}
           maxZoom={8}
+          className="map"
+          scrollWheelZoom={false}
         >
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
+
           {filteredMarkers.map((marker, idx) => (
             <Marker
               key={idx}
