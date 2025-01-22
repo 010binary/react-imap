@@ -1,3 +1,6 @@
+.leaflet-tile {
+  filter:  brightness(1.7) saturate(1.5);
+}
 .app-container {
   position: relative;
   background: #575D82;

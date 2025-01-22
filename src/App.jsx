@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
@@ -131,6 +131,85 @@ const customIcon = (category) => {
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
+};
+
+// Function to modify tile colors
+const manipulateTileColors = (tile, url, onLoad) => {
+  const img = new Image();
+  img.crossOrigin = "Anonymous"; // Avoid CORS issues
+  img.src = url;
+
+  img.onload = function () {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    // Target colors for land and water
+    const landRGB = { r: 19, g: 22, b: 42 }; // #13162A
+    const waterRGB = { r: 25, g: 29, b: 54 }; // #191D36
+
+    // Loop through each pixel
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]; // Red
+      const g = data[i + 1]; // Green
+      const b = data[i + 2]; // Blue
+
+      // Determine if the pixel is closer to land or water based on brightness
+      const brightness = 0.299 * r + 0.587 * g + 0.114 * b; // Perceived brightness
+      const targetRGB = brightness > 50 ? waterRGB : landRGB; // Higher brightness -> water
+
+      // Blend original colors towards the target
+      data[i] = targetRGB.r + (r - targetRGB.r) * 0.5; // Adjust red channel
+      data[i + 1] = targetRGB.g + (g - targetRGB.g) * 0.5; // Adjust green channel
+      data[i + 2] = targetRGB.b + (b - targetRGB.b) * 0.5; // Adjust blue channel
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    tile.src = canvas.toDataURL();
+    onLoad();
+  };
+
+  img.onerror = function () {
+    tile.src = url; // Fallback to original tile
+    onLoad();
+  };
+};
+
+const CustomTileLayer = () => {
+  const map = useMap();
+
+  React.useEffect(() => {
+    const layer = L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+      {
+        tileSize: 256,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    );
+
+    layer.createTile = function (coords, done) {
+      const tile = document.createElement("img");
+      const url = this.getTileUrl(coords);
+
+      manipulateTileColors(tile, url, () => done(null, tile));
+
+      return tile;
+    };
+
+    layer.addTo(map);
+
+    return () => {
+      map.removeLayer(layer);
+    };
+  }, [map]);
+
+  return null;
 };
 
 export default function App() {
@@ -283,10 +362,7 @@ export default function App() {
           scrollWheelZoom={false}
           zoomControl={false}
         >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <CustomTileLayer />
           <div className="leaflet-bottom leaflet-right">
             <div className="leaflet-control-zoom leaflet-bar leaflet-control">
               <a className="leaflet-control-zoom-in" href="#" title="Zoom in">
