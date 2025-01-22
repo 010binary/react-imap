@@ -124,9 +124,9 @@ const getCategoryColor = (category) => {
 const customIcon = (category) => {
   return L.divIcon({
     className: "custom-marker",
-    html: `<div style="background-color: ${getCategoryColor(
-      category
-    )};">02</div>`,
+    html: `<div style="background-color: ${getCategoryColor(category)};color:${
+      getCategoryColor(category) === "#ffd700" ? "#2D3463" : "white"
+    };">02</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
@@ -284,7 +284,7 @@ export default function App() {
           zoomControl={false}
         >
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <div className="leaflet-bottom leaflet-right">

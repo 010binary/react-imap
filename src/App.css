@@ -1,8 +1,9 @@
 .app-container {
   position: relative;
-  background: #1a1a2e;
+  background: #575D82;
   margin: 50px 80px;
   height: calc(100vh - 100px);
+
 }
 
 .map-wrapper {
@@ -60,7 +61,7 @@
 .dropdown {
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   background-color: white;
 }
 
