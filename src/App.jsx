@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 
@@ -136,6 +137,8 @@ export default function App() {
   const [searchText, setSearchText] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [sectorOpen, setSectorOpen] = useState(true);
+  const [zoneOpen, setZoneOpen] = useState(true);
 
   const filteredMarkers = markers.filter(
     (marker) =>
@@ -150,95 +153,150 @@ export default function App() {
       <div className="map-wrapper">
         <div className="sidebar">
           <div className="search-section">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Chercher une startup"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-          </div>
-
-          <div className="filter-section">
-            <h3>Secteur d'activité</h3>
-            <div className="checkbox-group">
-              {categories.map((category) => (
-                <label key={category} className="checkbox-item">
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedCategories([
-                          ...selectedCategories,
-                          category,
-                        ]);
-                      } else {
-                        setSelectedCategories(
-                          selectedCategories.filter((c) => c !== category)
-                        );
-                      }
-                    }}
-                  />
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </label>
-              ))}
+            <div className="search-wrapper">
+              <Search className="search-icon" size={20} />
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Chercher une startup"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
             </div>
           </div>
 
-          <div className="filter-section">
-            <h3>Zone géographique</h3>
-            <div className="checkbox-group">
-              {types.map((type) => (
-                <label key={type} className="checkbox-item">
-                  <input
-                    type="checkbox"
-                    checked={selectedTypes.includes(type)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedTypes([...selectedTypes, type]);
-                      } else {
-                        setSelectedTypes(
-                          selectedTypes.filter((t) => t !== type)
-                        );
-                      }
-                    }}
-                  />
-                  {type}
-                </label>
-              ))}
+          <div className="dropdown-section">
+            <div className="dropdown">
+              <input
+                hidden
+                className="sr-only"
+                name="category-dropdown"
+                id="category-dropdown"
+                type="checkbox"
+                checked={sectorOpen}
+                onChange={() => setSectorOpen(!sectorOpen)}
+              />
+              <label
+                aria-label="dropdown scrollbar"
+                htmlFor="category-dropdown"
+                className="trigger"
+              >
+                <span className="dropdown-title">Secteur d'activité</span>
+                <ChevronDown
+                  className={`chevron ${sectorOpen ? "open" : ""}`}
+                />
+              </label>
+              <div className="filter-section list webkit-scrollbar">
+                <div className="checkbox-group">
+                  {categories.map((category) => (
+                    <label key={category} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedCategories.includes(category)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedCategories([
+                              ...selectedCategories,
+                              category,
+                            ]);
+                          } else {
+                            setSelectedCategories(
+                              selectedCategories.filter((c) => c !== category)
+                            );
+                          }
+                        }}
+                      />
+                      <span>
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="button-group">
-            <button
-              className="cancel-btn"
-              onClick={() => {
-                setSelectedCategories([]);
-                setSelectedTypes([]);
-                setSearchText("");
-              }}
-            >
-              Annuler
-            </button>
-            <button className="apply-btn">Appliquer</button>
+            <div className="dropdown">
+              <input
+                hidden
+                className="sr-only"
+                name="type-dropdown"
+                id="type-dropdown"
+                type="checkbox"
+                checked={zoneOpen}
+                onChange={() => setZoneOpen(!zoneOpen)}
+              />
+              <label
+                aria-label="dropdown scrollbar"
+                htmlFor="type-dropdown"
+                className="trigger"
+              >
+                <span className="dropdown-title">Zone géographique</span>
+                <ChevronDown className={`chevron ${zoneOpen ? "open" : ""}`} />
+              </label>
+              <div className="filter-section list webkit-scrollbar">
+                <div className="checkbox-group">
+                  {types.map((type) => (
+                    <label key={type} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedTypes.includes(type)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedTypes([...selectedTypes, type]);
+                          } else {
+                            setSelectedTypes(
+                              selectedTypes.filter((t) => t !== type)
+                            );
+                          }
+                        }}
+                      />
+                      <span>{type}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="button-group">
+              <button
+                className="cancel-btn"
+                onClick={() => {
+                  setSelectedCategories([]);
+                  setSelectedTypes([]);
+                  setSearchText("");
+                }}
+              >
+                Annuler
+              </button>
+              <button className="apply-btn">Appliquer</button>
+            </div>
           </div>
         </div>
 
         <MapContainer
-          center={[0, 20]} // Center on Africa
+          center={[0, 20]}
           zoom={4}
           style={{ height: "90vh", width: "100%" }}
           minZoom={3}
           maxZoom={8}
           className="map"
           scrollWheelZoom={false}
+          zoomControl={false}
         >
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-
+          <div className="leaflet-bottom leaflet-right">
+            <div className="leaflet-control-zoom leaflet-bar leaflet-control">
+              <a className="leaflet-control-zoom-in" href="#" title="Zoom in">
+                +
+              </a>
+              <a className="leaflet-control-zoom-out" href="#" title="Zoom out">
+                -
+              </a>
+            </div>
+          </div>
           {filteredMarkers.map((marker, idx) => (
             <Marker
               key={idx}
