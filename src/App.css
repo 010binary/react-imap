@@ -17,7 +17,7 @@ body {
 
 .map-wrapper {
   position: relative;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .search-input {
@@ -32,20 +32,20 @@ body {
 
 /* Custom marker styling */
 .custom-marker {
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 40px;
 }
 
 .custom-marker div {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 50px;
+  height: 40px;
+  border-radius: 45%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 /* Popup styling */

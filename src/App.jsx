@@ -126,7 +126,6 @@ const getCategoryColor = (category) => {
     Télécommunications: "#ff1493", // Pink
     Finance: "#ffd700", // Yellow
     Agriculture: "#ff1493", // Pink
-
   };
   return colors[category] || "#ffd700";
 };
@@ -138,7 +137,7 @@ const customIcon = (category) => {
     html: `<div style="background-color: ${getCategoryColor(category)};color:${
       getCategoryColor(category) === "#ffd700" ? "#2D3463" : "white"
     };">02</div>`,
-    iconSize: [32, 32],
+    iconSize: [50, 40],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
