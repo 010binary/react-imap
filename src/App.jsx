@@ -231,12 +231,12 @@ export default function App() {
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [sectorOpen, setSectorOpen] = useState(true);
   const [zoneOpen, setZoneOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   // Detect if the screen is mobile
   React.useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 900);
+      setIsMobile(window.innerWidth <= 900 ? true : false);
     };
 
     // Set the initial value
@@ -390,7 +390,7 @@ export default function App() {
 
         <MapContainer
           center={[0, 20]}
-          zoom={isMobile ? 2 : 4}
+          zoom={isMobile ? 3 : 4}
           style={{ height: "90vh", width: "100%" }}
           minZoom={2}
           maxZoom={6}
