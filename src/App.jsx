@@ -231,6 +231,23 @@ export default function App() {
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [sectorOpen, setSectorOpen] = useState(true);
   const [zoneOpen, setZoneOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect if the screen is mobile
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+
+    // Set the initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const filteredMarkers = markers.filter(
     (marker) =>
@@ -373,7 +390,7 @@ export default function App() {
 
         <MapContainer
           center={[0, 20]}
-          zoom={4}
+          zoom={isMobile ? 2 : 4}
           style={{ height: "90vh", width: "100%" }}
           minZoom={2}
           maxZoom={6}
