@@ -4,6 +4,7 @@ import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import "./css/popup.css";
+import "./css/responsive.css";
 
 const sectors = ["Télécommunications", "Finance", "Agriculture"];
 
