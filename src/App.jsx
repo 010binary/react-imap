@@ -3,6 +3,7 @@ import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
+import "./css/popup.css";
 
 const sectors = ["Télécommunications", "Finance", "Agriculture"];
 
@@ -396,10 +397,15 @@ export default function App() {
               icon={customIcon(marker.category)}
             >
               <Popup>
-                <div className="custom-popup">
-                  <h4>{marker.title}</h4>
+                <div className="custom-popup-container">
+                  <h3>{marker.title}</h3>
                   <p>Category: {marker.category}</p>
                   <p>Region: {marker.type}</p>
+                  <img
+                    src="/fuze_logo.svg"
+                    alt="Company logo"
+                    className="popup-logo"
+                  />
                 </div>
               </Popup>
             </Marker>

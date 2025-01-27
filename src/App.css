@@ -48,22 +48,6 @@ body {
   font-size: 20px;
 }
 
-/* Popup styling */
-.custom-popup {
-  padding: 10px;
-  min-width: 200px;
-}
-
-.custom-popup h4 {
-  margin: 0 0 8px 0;
-  color: #333;
-}
-
-.custom-popup p {
-  margin: 4px 0;
-  color: #666;
-}
-
 /* Override leaflet default styles */
 .leaflet-container {
   background: #1a1a2e !important;
