@@ -232,6 +232,7 @@ export default function App() {
   const [sectorOpen, setSectorOpen] = useState(true);
   const [zoneOpen, setZoneOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(true);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Detect if the screen is mobile
   React.useEffect(() => {
@@ -249,22 +250,28 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filteredMarkers = markers.filter(
-    (marker) =>
-      marker.title.toLowerCase().includes(searchText.toLowerCase()) &&
-      (selectedSectors.length === 0 ||
-        selectedSectors.includes(marker.category)) &&
-      (selectedTypes.length === 0 || selectedTypes.includes(marker.type))
-  );
+  const filteredMarkers = hasSearched
+    ? markers.filter(
+        (marker) =>
+          marker.title.toLowerCase().includes(searchText.toLowerCase()) &&
+          (selectedSectors.length === 0 ||
+            selectedSectors.includes(marker.category)) &&
+          (selectedTypes.length === 0 || selectedTypes.includes(marker.type))
+      )
+    : [];
 
+  const handleSearch = (e) => {
+    const text = e.target.value;
+    setSearchText(text);
+    // Set hasSearched to true when the user types something
+    setHasSearched(text.trim() !== "");
+  };
   const handleReset = () => {
     setSelectedSectors([]);
     setSelectedTypes([]);
     setSearchText("");
-  };
-  const handleSearch = (e) => {
-    const text = e.target.value;
-    setSearchText(text);
+    // Reset hasSearched when the user clears the search
+    setHasSearched(false);
   };
 
   return (
@@ -391,7 +398,7 @@ export default function App() {
         <MapContainer
           center={[0, 20]}
           zoom={isMobile ? 3 : 4}
-          style={{ height: "90vh", width: "100%" }}
+          style={{ height: isMobile ? "90vh" : "95vh", width: "100%" }}
           minZoom={2}
           maxZoom={6}
           className="map"
