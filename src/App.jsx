@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import { Search, ChevronDown } from "lucide-react";
 import "leaflet/dist/leaflet.css";
@@ -195,7 +195,7 @@ const manipulateTileColors = (tile, url, onLoad) => {
 const CustomTileLayer = () => {
   const map = useMap();
 
-  React.useEffect(() => {
+  useEffect(() => {
     // eslint-disable-next-line no-undef
     const layer = L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
@@ -233,9 +233,10 @@ export default function App() {
   const [zoneOpen, setZoneOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(true);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
 
   // Detect if the screen is mobile
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 900 ? true : false);
     };
@@ -250,15 +251,17 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filteredMarkers = hasSearched
-    ? markers.filter(
-        (marker) =>
-          marker.title.toLowerCase().includes(searchText.toLowerCase()) &&
-          (selectedSectors.length === 0 ||
-            selectedSectors.includes(marker.category)) &&
-          (selectedTypes.length === 0 || selectedTypes.includes(marker.type))
-      )
-    : [];
+  const filteredMarkers =
+    hasSearched || isAnyCheckboxSelected
+      ? markers.filter(
+          (marker) =>
+            (searchText === "" ||
+              marker.title.toLowerCase().includes(searchText.toLowerCase())) &&
+            (selectedSectors.length === 0 ||
+              selectedSectors.includes(marker.category)) &&
+            (selectedTypes.length === 0 || selectedTypes.includes(marker.type))
+        )
+      : [];
 
   const handleSearch = (e) => {
     const text = e.target.value;
@@ -266,14 +269,31 @@ export default function App() {
     // Set hasSearched to true when the user types something
     setHasSearched(text.trim() !== "");
   };
+
   const handleReset = () => {
     setSelectedSectors([]);
     setSelectedTypes([]);
     setSearchText("");
-    // Reset hasSearched when the user clears the search
     setHasSearched(false);
+    setIsAnyCheckboxSelected(false);
   };
 
+  const handleCheckboxChange = (type, value, isChecked) => {
+    const updateSelected = (prev) =>
+      isChecked ? [...prev, value] : prev.filter((item) => item !== value);
+
+    if (type === "sector") {
+      setSelectedSectors(updateSelected);
+    } else if (type === "type") {
+      setSelectedTypes(updateSelected);
+    }
+
+    setTimeout(() => {
+      const anySelected =
+        selectedSectors.length > 0 || selectedTypes.length > 0;
+      setIsAnyCheckboxSelected(anySelected);
+    }, 0);
+  };
   return (
     <div className="app-container">
       <div className="map-wrapper">
@@ -310,18 +330,13 @@ export default function App() {
                           <input
                             type="checkbox"
                             checked={selectedSectors.includes(sector)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedSectors([
-                                  ...selectedSectors,
-                                  sector,
-                                ]);
-                              } else {
-                                setSelectedSectors(
-                                  selectedSectors.filter((c) => c !== sector)
-                                );
-                              }
-                            }}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                "sector",
+                                sector,
+                                e.target.checked
+                              )
+                            }
                           />
                           <span>{sector}</span>
                         </label>
@@ -349,15 +364,13 @@ export default function App() {
                             <input
                               type="checkbox"
                               checked={selectedTypes.includes(region)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedTypes([...selectedTypes, region]);
-                                } else {
-                                  setSelectedTypes(
-                                    selectedTypes.filter((t) => t !== region)
-                                  );
-                                }
-                              }}
+                              onChange={(e) =>
+                                handleCheckboxChange(
+                                  "type",
+                                  region,
+                                  e.target.checked
+                                )
+                              }
                             />
                             <span>{region}</span>
                           </label>
